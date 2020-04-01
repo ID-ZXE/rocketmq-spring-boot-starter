@@ -1,5 +1,7 @@
 # rocketmq-spring-boot-starter
 一个简单的spring-boot-stater,参考了别人的实现,封装了一层,只使用@RocketmqConsumer注解就可以完成消费,开箱即用
+  
+不过好像官方已经提供了...hhh,这个repo就是学习一下spring-boot-stater怎么写
 
 #### RocketmqConsumer注解
 ```
