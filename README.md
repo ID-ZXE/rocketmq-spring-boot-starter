@@ -72,7 +72,7 @@ rocketmq.consumer.consumeMessageBatchMaxSize=1
 ```
 
 #### 示例代码
-##### comsumer
+##### 消费者代码
 ```
 @Component
 public class MyConsumer {
@@ -100,7 +100,7 @@ public class MyConsumer {
     }
 }
 ```
-##### producer
+##### 生产者代码
 ```
 @Resource
 private DefaultMQProducer defaultMQProducer;
