@@ -18,4 +18,8 @@ public @interface RocketmqConsumer {
 
     String group();
 
+    String tag() default "*";
+
+    boolean isBroadCasting() default false;
+
 }

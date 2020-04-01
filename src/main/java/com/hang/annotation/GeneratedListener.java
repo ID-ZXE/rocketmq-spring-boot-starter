@@ -4,6 +4,7 @@ import com.hang.listener.MessageListener;
 import javassist.*;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.exception.MQClientException;
+import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,12 +29,12 @@ public class GeneratedListener implements MessageListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    GeneratedListener(Object bean, Method method, String topic, String group) {
+    GeneratedListener(Object bean, Method method) {
         Class<?> targetClass = AopUtils.getTargetClass(bean);
         try {
             Class<?> listenerClass = compile(bean, method, targetClass);
             Constructor<?> constructor = listenerClass.getConstructor(targetClass);
-            this.LISTENER = (MessageListener) constructor.newInstance(bean);
+            LISTENER = (MessageListener) constructor.newInstance(bean);
         } catch (Exception e) {
             throw new RuntimeException("init generate listener error");
         }
@@ -41,7 +42,7 @@ public class GeneratedListener implements MessageListener {
 
     private Class<?> compile(Object bean, Method method, Class<?> targetClass) throws NotFoundException, CannotCompileException {
         int current = INDEX.incrementAndGet();
-        String generateListenerClassName = "Listener" + current;
+        String generateListenerClassName = "RocketMQListener" + current;
         ClassLoader classLoader = bean.getClass().getClassLoader();
 
         ClassPool pool = new ClassPool(true);
@@ -57,8 +58,8 @@ public class GeneratedListener implements MessageListener {
     }
 
     @Override
-    public void onMessage(String msg) {
-        this.LISTENER.onMessage(msg);
+    public void onMessage(Message message) {
+        this.LISTENER.onMessage(message);
     }
 
 }

@@ -31,8 +31,6 @@ public class RocketmqAutoConfiguration {
 
     static class Register implements ImportBeanDefinitionRegistrar {
 
-        private static final Logger LOGGER = LoggerFactory.getLogger(Register.class);
-
         @Override
         public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
             if (!registry.containsBeanDefinition(ROCKETMQ_CLIENT_ANNOTATION)) {
