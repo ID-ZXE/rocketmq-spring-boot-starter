@@ -2,10 +2,7 @@ package com.hang.annotation;
 
 import com.hang.listener.MessageListener;
 import javassist.*;
-import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
-import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.message.Message;
-import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.support.AopUtils;
@@ -53,7 +50,7 @@ public class GeneratedListener implements MessageListener {
         String fullName = targetClass.getCanonicalName();
         ctClass.addField(CtField.make("private " + fullName + " target=null;\n", ctClass));
         ctClass.addConstructor(CtNewConstructor.make("public " + generateListenerClassName + "(" + fullName + " target){this.target=target;}\n", ctClass));
-        ctClass.addMethod(CtMethod.make("public void onMessage(java.lang.String message){this.target." + method.getName() + "(message);}\n", ctClass));
+        ctClass.addMethod(CtMethod.make("public void onMessage(org.apache.rocketmq.common.message.Message message){this.target." + method.getName() + "(message);}\n", ctClass));
         return ctClass.toClass(classLoader, null);
     }
 

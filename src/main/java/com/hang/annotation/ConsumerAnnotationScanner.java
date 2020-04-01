@@ -8,6 +8,7 @@ import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
+import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,12 +76,12 @@ public class ConsumerAnnotationScanner implements BeanPostProcessor {
 
             String methodName = method.getName();
             Class<?>[] args = method.getParameterTypes();
-            String message = String.format("如果想配置成为message listener,方法必须有且只有一个参数,类型必须为java.lang.String类型: %s method:%s", beanName, methodName);
+            String message = String.format("如果想配置成为message listener,方法必须有且只有一个参数,类型必须为org.apache.rocketmq.common.message.Message类型: %s method:%s", beanName, methodName);
             if (args.length != 1) {
                 LOGGER.error(message);
                 throw new RuntimeException(message);
             }
-            if (args[0] != String.class) {
+            if (args[0] != Message.class) {
                 LOGGER.error(message);
                 throw new RuntimeException(message);
             }
@@ -88,13 +89,6 @@ public class ConsumerAnnotationScanner implements BeanPostProcessor {
             String topic = annotation.topic();
             if (StringUtils.isEmpty(topic)) {
                 String err = String.format("使用@RocketmqConsumer,必须提供topic, class:%s method:%s", beanName, methodName);
-                LOGGER.error(err);
-                throw new RuntimeException(err);
-            }
-
-            String group = annotation.group();
-            if (StringUtils.isEmpty(group)) {
-                String err = String.format("使用@RocketmqConsumer,必须提供group, class:%s method:%s", beanName, methodName);
                 LOGGER.error(err);
                 throw new RuntimeException(err);
             }
@@ -125,7 +119,11 @@ public class ConsumerAnnotationScanner implements BeanPostProcessor {
         }
 
         public void createConsumer(RocketmqConsumer annotation, MessageListener messageListener) {
-            DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(properties.getGroupName());
+            String groupName = StringUtils.isEmpty(annotation.group()) ? properties.getGroupName() : annotation.group();
+            if(StringUtils.isEmpty(groupName)) {
+                throw new RuntimeException("group name 未设置");
+            }
+            DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(groupName);
             consumer.setNamesrvAddr(properties.getNameSrvAddr());
             consumer.setConsumeThreadMin(properties.getConsumerConsumeThreadMin());
             consumer.setConsumeThreadMax(properties.getConsumerConsumeThreadMax());
@@ -150,8 +148,9 @@ public class ConsumerAnnotationScanner implements BeanPostProcessor {
             try {
                 consumer.subscribe(annotation.topic(), annotation.tag());
                 consumer.start();
+                LOGGER.info("init consumer group:{}, topic:{} success", groupName, annotation.topic());
             } catch (MQClientException e) {
-                LOGGER.error("init consumer group:{}, topic:{} error", annotation.group(), annotation.topic(), e);
+                LOGGER.error("init consumer group:{}, topic:{} error", groupName, annotation.topic(), e);
             }
             this.consumer = consumer;
         }

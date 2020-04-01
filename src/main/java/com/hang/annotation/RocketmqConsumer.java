@@ -16,7 +16,7 @@ public @interface RocketmqConsumer {
 
     String topic();
 
-    String group();
+    String group() default "";
 
     String tag() default "*";
 
