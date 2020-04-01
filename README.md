@@ -1,6 +1,24 @@
 # rocketmq-spring-boot-starter
 一个简单的rocketmq-stater,参考了许多人的代码
 
+#### 引入依赖
+```
+把代码download到本地
+mvn clean install
+然后添加依赖
+
+<dependency>
+    <groupId>com.hang</groupId>
+    <artifactId>rocketmq-spring-boot-starter</artifactId>
+    <version>1.0-SNAPSHOT</version>
+</dependency>
+<dependency>
+    <groupId>org.apache.rocketmq</groupId>
+    <artifactId>rocketmq-client</artifactId>
+    <version>4.7.0</version>
+</dependency>
+```
+
 #### 配置项 application.properties
 ```
 #rocket配置
