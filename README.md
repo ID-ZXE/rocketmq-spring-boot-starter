@@ -1,5 +1,34 @@
 # rocketmq-spring-boot-starter
-一个简单的spring-boot-stater,参考了别人的实现,封装了一层,只使用@RocketMQConsumer注解就可以完成消费,开箱即用
+一个简单的spring-boot-stater,参考了别人的实现,封装了一层,只使用@RocketmqConsumer注解就可以完成消费,开箱即用
+
+#### RocketmqConsumer注解
+```
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD})
+@Inherited
+public @interface RocketmqConsumer {
+    /**
+     * 主题
+     */
+    String topic();
+
+    /**
+     * group 可以缺省
+     */
+    String group() default "";
+
+    /**
+     * rocketmq的tag,*的时候表示匹配所有
+     */
+    String tag() default "*";
+
+    /**
+     * 默认为集群模式
+     */
+    boolean isBroadCasting() default false;
+}
+```
 
 #### 引入依赖
 ```
