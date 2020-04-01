@@ -1,5 +1,5 @@
 # rocketmq-spring-boot-starter
-一个简单的rocketmq-stater,参考了许多人的代码
+一个简单的spring-boot-stater,参考了别人的实现,封装了一层,只使用@RocketMQConsumer注解就可以完成消费,开箱即用
 
 #### 引入依赖
 ```
